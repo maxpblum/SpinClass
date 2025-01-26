@@ -12,7 +12,9 @@
     "typescript-eslint": "^8.21.0"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "rm -rf dist && tsc",
+    "lint": "eslint src/* spec/*",
+    "test": "npm run build && jasmine"
   },
   "type": "module"
 }
