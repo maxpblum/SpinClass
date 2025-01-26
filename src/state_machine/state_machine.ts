@@ -4,4 +4,4 @@ function logWord(word: string) {
   console.log(word);
 }
 
-logWord(x as unknown as string);
+logWord('hello');
