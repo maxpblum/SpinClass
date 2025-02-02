@@ -3,7 +3,7 @@ class StateMachine<State, InType, OutType> {
 
   constructor(
     initial: State,
-    private readonly reducer: (input: InType) => {
+    private readonly reducer: (state: State, input: InType) => {
       newState: State;
       output: OutType;
     }
@@ -12,7 +12,7 @@ class StateMachine<State, InType, OutType> {
   }
 
   iterateAndGetOutput(input: InType): OutType {
-    const result = this.reducer(input);
+    const result = this.reducer(this.state, input);
     this.state = result.newState;
     return result.output;
   }
