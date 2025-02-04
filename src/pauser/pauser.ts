@@ -32,7 +32,7 @@ export function makeTimeEvent(time: DOMHighResTimeStamp): UpstreamTime {
   return {kind: 'upstreamtime', time};
 }
 
-type PauserEvent = Pause | Resume | UpstreamTime;
+export type PauserEvent = Pause | Resume | UpstreamTime;
 
 const initialState: PauserState = {
   paused: true,
