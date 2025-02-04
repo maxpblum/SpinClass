@@ -15,7 +15,8 @@
   "scripts": {
     "build": "rm -rf dist && tsc",
     "lint": "eslint src/* spec/*",
-    "test": "npm run build && jasmine"
+    "test": "npm run build && jasmine",
+    "fix": "prettier -w **/*.ts"
   },
   "type": "module"
 }

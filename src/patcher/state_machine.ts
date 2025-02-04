@@ -3,10 +3,13 @@ class StateMachine<State, InType, OutType> {
 
   constructor(
     initial: State,
-    private readonly reducer: (state: State, input: InType) => {
+    private readonly reducer: (
+      state: State,
+      input: InType,
+    ) => {
       newState: State;
       output: OutType;
-    }
+    },
   ) {
     this.state = initial;
   }
@@ -18,9 +21,12 @@ class StateMachine<State, InType, OutType> {
   }
 }
 
-function makeStateMachine<State, InType, OutType>(
+export function makeStateMachine<State, InType, OutType>(
   initial: State,
-  reducer: (input: InType) => { newState: State; output: OutType }
+  reducer: (
+    state: State,
+    input: InType,
+  ) => { newState: State; output: OutType },
 ): (input: InType) => OutType {
   const machine = new StateMachine<State, InType, OutType>(initial, reducer);
   return (input: InType) => machine.iterateAndGetOutput(input);

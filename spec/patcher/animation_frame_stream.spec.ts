@@ -1,14 +1,14 @@
-import { AnimationFrameStream } from "../../src/patcher/animation_frame_stream.js";
+import { AnimationFrameStream } from '../../src/patcher/animation_frame_stream.js';
 
-describe("AnimationFrameStream", () => {
-  it("yields values from requestAnimationFrame", async () => {
+describe('AnimationFrameStream', () => {
+  it('yields values from requestAnimationFrame', async () => {
     // Create a fake window.requestAnimationFrame that calls the callback
     // function with incremental integers starting at 1, using
     // setTimeout(..., 0) to yield the thread in between increments, just like
     // the real function would yield the thread in between loop iterations.
     let nextValueToEmit: DOMHighResTimeStamp = 1;
     const fakeRequestAnimationFrame = (
-      cb: (ts: DOMHighResTimeStamp) => void
+      cb: (ts: DOMHighResTimeStamp) => void,
     ) => {
       setTimeout(() => {
         cb(nextValueToEmit);

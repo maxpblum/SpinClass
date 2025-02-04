@@ -1,7 +1,7 @@
-import { BlipSink } from "../../src/patcher/blip_sink.js";
+import { BlipSink } from '../../src/patcher/blip_sink.js';
 
-describe("BlipSink", () => {
-  it("runs the handler on incoming blips", async () => {
+describe('BlipSink', () => {
+  it('runs the handler on incoming blips', async () => {
     const sideEffects: string[] = [];
     const sink = new BlipSink<number>((num: number) => {
       sideEffects.push(`side effect for num ${num}`);
@@ -13,9 +13,9 @@ describe("BlipSink", () => {
     }
     await sink.listen(emitThreeNums());
     expect(sideEffects).toEqual([
-      "side effect for num 11",
-      "side effect for num 22",
-      "side effect for num 33",
+      'side effect for num 11',
+      'side effect for num 22',
+      'side effect for num 33',
     ]);
   });
 });

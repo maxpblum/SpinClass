@@ -20,8 +20,8 @@ interface UpstreamTime {
 type PauserEvent = Pause|Resume|UpstreamTime;
 
 const initialState: PauserState = {
-  paused: true;
-  elapsed: 0;
+  paused: true,
+  elapsed: 0,
 };
 
 function reducer(state: PauserState, input: PauserEvent) {

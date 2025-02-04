@@ -3,8 +3,8 @@ export class AnimationFrameStream
 {
   constructor(
     private readonly requestAnimationFrame: (
-      cb: (ts: DOMHighResTimeStamp) => void
-    ) => void
+      cb: (ts: DOMHighResTimeStamp) => void,
+    ) => void,
   ) {}
 
   [Symbol.asyncIterator]() {
