@@ -1,6 +1,9 @@
 export class AnimationFrameStream
   implements AsyncIterable<DOMHighResTimeStamp>
 {
+  /** Whether to end the stream permanently. Only foreseen use is testing. */
+  public shouldEnd: boolean = false;
+
   constructor(
     private readonly requestAnimationFrame: (
       cb: (ts: DOMHighResTimeStamp) => void,
@@ -26,7 +29,7 @@ export class AnimationFrameStream
         return new Promise<IteratorResult<DOMHighResTimeStamp>>((resolve) => {
           nextResolveFunc = (timestamp: DOMHighResTimeStamp) => {
             resolve({
-              done: false,
+              done: this.shouldEnd,
               value: timestamp,
             });
           };
