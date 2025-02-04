@@ -6,7 +6,7 @@ interface PauserState {
   readonly lastUpstreamTime: DOMHighResTimeStamp;
 }
 
-interface PauserOutput {
+export interface PauserOutput {
   readonly paused: boolean;
   readonly elapsed: DOMHighResTimeStamp;
 }
@@ -64,4 +64,70 @@ export function makePauser() {
     initialState,
     reducer
   );
+}
+
+export class PauserElement {
+  box: HTMLDivElement;
+  private btn: HTMLButtonElement;
+  private elapsedStateBox: HTMLDivElement;
+  private pausedStateBox: HTMLDivElement;
+  private paused: boolean = true;
+  private elapsed: DOMHighResTimeStamp = -1;
+  private handleNewPausedState: (paused: boolean) => void;
+  private nextPausedStatePromise: Promise<boolean>;
+
+  constructor(private doc: Document) {
+    this.box = doc.createElement('div');
+    this.box.classList.add('pauser-box');
+
+    this.elapsedStateBox = doc.createElement('div');
+    this.box.appendChild(this.elapsedStateBox);
+    this.elapsedStateBox.classList.add('pauser-elapsed-statebox');
+    this.setElapsedStateBoxText();
+
+    this.pausedStateBox = doc.createElement('div');
+    this.box.appendChild(this.pausedStateBox);
+    this.pausedStateBox.classList.add('pauser-paused-statebox');
+    this.setPausedStateBoxText();
+
+    this.btn = doc.createElement('button');
+    this.box.appendChild(this.btn);
+    this.btn.innerText = 'Pause/Resume';
+    this.btn.classList.add('pauser-button');
+
+    this.resetPausedStatePromise();
+
+    this.btn.addEventListener('click', () => {
+      this.handleNewPausedState(!this.paused);
+    });
+  }
+
+  setElapsedStateBoxText() {
+    this.elapsedStateBox.innerText = String(this.elapsed);
+  }
+
+  setPausedStateBoxText() {
+    this.pausedStateBox.innerText = this.paused ? 'Paused' : 'Running';
+  }
+
+  resetPausedStatePromise() {
+    this.nextPausedStatePromise = new Promise<boolean>((res) => {
+      this.handleNewPausedState = res;
+    });
+  }
+
+  async * pausedStates() {
+    while (true) {
+      yield await this.nextPausedStatePromise;
+      this.resetPausedStatePromise();
+    }
+  }
+
+  handlePauserOutput(output: PauserOutput) {
+    this.paused = output.paused;
+    this.elapsed = output.elapsed;
+    console.log(`handling ${JSON.stringify(output)}`);
+    this.setPausedStateBoxText();
+    this.setElapsedStateBoxText();
+  }
 }
