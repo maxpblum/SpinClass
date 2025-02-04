@@ -4,60 +4,53 @@ import {
   PAUSE_EVENT,
   RESUME_EVENT,
   PauserEvent,
+  PauserOutput,
 } from '../../src/pauser/pauser.js';
-import { BlipTransformer } from '../../src/patcher/blip_transformer.js';
-import { BlipSink } from '../../src/patcher/blip_sink.js';
-
-async function* streamFromPromises<T>(promises: Promise<T>[]) {
-  for (const p of promises) {
-    yield await p;
-  }
-}
-
-async function sinkBlipsToArray<T>(inBlips: AsyncIterable<T>) {
-  const output: T[] = [];
-  await new BlipSink((blip) => output.push(blip)).listen(inBlips);
-  return output;
-}
-
-describe('test helpers', () => {
-  it('streamFromPromises and sinkBlipsToArray work together', async () => {
-    await expectAsync(
-      sinkBlipsToArray(
-        streamFromPromises([
-          Promise.resolve(1),
-          Promise.resolve(2),
-          Promise.resolve(3),
-        ])
-      )
-    ).toBeResolvedTo([1, 2, 3]);
-  });
-});
+import { Transform } from '../../src/patcher/blip_transformer.js';
+import { ArraySink } from '../../src/patcher/blip_sink.js';
+import { TriggerableStream } from '../../src/patcher/triggerable.js';
 
 describe('pauser graph', () => {
-  it('does not increment while paused', async () => {
-    const inputStream = streamFromPromises<PauserEvent>([
-      Promise.resolve(makeTimeEvent(10)),
-      Promise.resolve(makeTimeEvent(12)),
-      Promise.resolve(makeTimeEvent(15)),
-    ]);
-    const pauser = new BlipTransformer(inputStream, makePauser());
-    await expectAsync(sinkBlipsToArray(pauser.outBlips())).toBeResolvedTo([
+  it('does not increment while paused', () => {
+    const inputStream = new TriggerableStream();
+
+    const timeTransformer = new Transform(makeTimeEvent);
+    inputStream.pipe(timeTransformer);
+
+    const pauser = new Transform(makePauser());
+    timeTransformer.pipe(pauser);
+
+    const sink = new ArraySink<PauserOutput>();
+    pauser.pipe(sink);
+
+    inputStream.trigger(10);
+    inputStream.trigger(12);
+    inputStream.trigger(15);
+
+    expect(sink.array).toEqual([
       { paused: true, elapsed: 0 },
       { paused: true, elapsed: 0 },
       { paused: true, elapsed: 0 },
     ]);
   });
 
-  it('increments while resumed', async () => {
-    const inputStream = streamFromPromises<PauserEvent>([
-      Promise.resolve(makeTimeEvent(10)),
-      Promise.resolve(RESUME_EVENT),
-      Promise.resolve(makeTimeEvent(12)),
-      Promise.resolve(makeTimeEvent(15)),
-    ]);
-    const pauser = new BlipTransformer(inputStream, makePauser());
-    await expectAsync(sinkBlipsToArray(pauser.outBlips())).toBeResolvedTo([
+  it('increments while resumed', () => {
+    const inputStream = new TriggerableStream<PauserEvent>();
+
+    const pauser = new Transform(makePauser());
+    inputStream.pipe(pauser);
+
+    const sink = new ArraySink<PauserOutput>();
+    pauser.pipe(sink);
+
+    [
+      makeTimeEvent(10),
+      RESUME_EVENT,
+      makeTimeEvent(12),
+      makeTimeEvent(15),
+    ].forEach((e) => inputStream.trigger(e));
+
+    expect(sink.array).toEqual([
       { paused: true, elapsed: 0 },
       { paused: false, elapsed: 0 },
       { paused: false, elapsed: 2 },

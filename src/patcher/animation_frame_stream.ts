@@ -1,37 +1,11 @@
-export class AnimationFrameStream
-  implements AsyncIterable<DOMHighResTimeStamp>
-{
-  constructor(
-    private readonly requestAnimationFrame: (
-      cb: (ts: DOMHighResTimeStamp) => void,
-    ) => void,
-  ) {}
+import {BlipStream} from './blip_stream.js';
 
-  [Symbol.asyncIterator]() {
-    let nextResolveFunc;
-    const thisAnimationFrameStream = this;
-
-    function iterate() {
-      thisAnimationFrameStream.requestAnimationFrame((timestamp) => {
-        if (nextResolveFunc) {
-          nextResolveFunc(timestamp);
-        }
-        iterate();
-      });
+export class AnimationFrameStream extends BlipStream<DOMHighResTimeStamp> {
+  forEach(cb: (ts: DOMHighResTimeStamp) => void) {
+    function handleFrame(ts: DOMHighResTimeStamp) {
+      cb(ts);
+      window.requestAnimationFrame(handleFrame);
     }
-    iterate();
-
-    return {
-      next(): Promise<IteratorResult<DOMHighResTimeStamp>> {
-        return new Promise<IteratorResult<DOMHighResTimeStamp>>((resolve) => {
-          nextResolveFunc = (timestamp: DOMHighResTimeStamp) => {
-            resolve({
-              done: false,
-              value: timestamp,
-            });
-          };
-        });
-      },
-    };
+    window.requestAnimationFrame(handleFrame);
   }
 }

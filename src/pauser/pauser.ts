@@ -1,4 +1,5 @@
 import { makeStateMachine } from '../patcher/state_machine.js';
+import { TriggerableStream } from '../patcher/triggerable.js';
 
 interface PauserState {
   readonly paused: boolean;
@@ -68,13 +69,12 @@ export function makePauser() {
 
 export class PauserElement {
   box: HTMLDivElement;
+  pausedStates = new TriggerableStream<boolean>();
   private btn: HTMLButtonElement;
   private elapsedStateBox: HTMLDivElement;
   private pausedStateBox: HTMLDivElement;
   private paused: boolean = true;
   private elapsed: DOMHighResTimeStamp = -1;
-  private handleNewPausedState: (paused: boolean) => void;
-  private nextPausedStatePromise: Promise<boolean>;
 
   constructor(private doc: Document) {
     this.box = doc.createElement('div');
@@ -95,10 +95,8 @@ export class PauserElement {
     this.btn.innerText = 'Pause/Resume';
     this.btn.classList.add('pauser-button');
 
-    this.resetPausedStatePromise();
-
     this.btn.addEventListener('click', () => {
-      this.handleNewPausedState(!this.paused);
+      this.pausedStates.trigger(!this.paused);
     });
   }
 
@@ -108,19 +106,6 @@ export class PauserElement {
 
   setPausedStateBoxText() {
     this.pausedStateBox.innerText = this.paused ? 'Paused' : 'Running';
-  }
-
-  resetPausedStatePromise() {
-    this.nextPausedStatePromise = new Promise<boolean>((res) => {
-      this.handleNewPausedState = res;
-    });
-  }
-
-  async * pausedStates() {
-    while (true) {
-      yield await this.nextPausedStatePromise;
-      this.resetPausedStatePromise();
-    }
   }
 
   handlePauserOutput(output: PauserOutput) {
