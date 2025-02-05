@@ -22,6 +22,10 @@ export interface NewTempo {
   newTempoBpm: number;
 }
 
+export function makeTempoEvent(tempoBpm: number): NewTempo {
+  return { kind: 'newtempo', newTempoBpm: tempoBpm };
+}
+
 export type BeaterEvent = NewTime | NewTempo;
 
 export interface BeaterOutput {
