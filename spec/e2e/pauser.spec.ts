@@ -8,7 +8,7 @@ import {
 } from '../../src/pauser/pauser.js';
 import { Transform } from '../../src/patcher/blip_transformer.js';
 import { ArraySink } from '../../src/patcher/blip_sink.js';
-import { TriggerableStream } from '../../src/patcher/triggerable.js';
+import { TriggerableStream } from '../../src/patcher/blip_stream.js';
 
 describe('pauser graph', () => {
   it('does not increment while paused', () => {

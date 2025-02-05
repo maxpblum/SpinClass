@@ -1,5 +1,5 @@
 import { PauserOutput } from './pauser.js';
-import { TriggerableStream } from '../patcher/triggerable.js';
+import { TriggerableStream } from '../patcher/blip_stream.js';
 
 export class PauserElement {
   box: HTMLDivElement;
