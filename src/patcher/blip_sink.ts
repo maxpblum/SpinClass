@@ -8,7 +8,7 @@ export class BlipSink<T> implements BlipReceiver<T> {
 }
 
 export class ArraySink<T> extends BlipSink<T> {
-  readonly array: T[];
+  readonly array: T[] = [];
   constructor() {
     super((v: T) => this.array.push(v));
   }
