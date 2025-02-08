@@ -17,19 +17,19 @@ describe('beatsElapsed', () => {
           tempoBpm: 20,
           beatsElapsed: -5,
         },
-        makeTimeEvent(1000 * 60 * 3)
-      )
+        makeTimeEvent(1000 * 60 * 3),
+      ),
     ).toEqual({
       newState: {
         lastTimeMs: 1000 * 60 * 3,
         lastTempoChangeMs: 1000 * 60,
         beatsElapsedAtLastTempoChange: 10,
         tempoBpm: 20,
-        beatsElapsed: 10 + (20 * 2),
+        beatsElapsed: 10 + 20 * 2,
       },
       output: {
         tempoBpm: 20,
-        beatsElapsed: 10 + (20 * 2),
+        beatsElapsed: 10 + 20 * 2,
       },
     });
   });
@@ -44,8 +44,8 @@ describe('beatsElapsed', () => {
           tempoBpm: 20,
           beatsElapsed: 5,
         },
-        makeTempoEvent(30)
-      )
+        makeTempoEvent(30),
+      ),
     ).toEqual({
       newState: {
         lastTimeMs: 1000 * 60 * 2,

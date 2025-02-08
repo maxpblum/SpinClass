@@ -1,4 +1,4 @@
-import {BlipStream} from './blip_stream.js';
+import { BlipStream } from './blip_stream.js';
 
 export class AnimationFrameStream extends BlipStream<DOMHighResTimeStamp> {
   forEach(cb: (ts: DOMHighResTimeStamp) => void) {

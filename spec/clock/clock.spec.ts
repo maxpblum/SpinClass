@@ -1,4 +1,4 @@
-import {toTimeString} from '../../src/clock/clock.js';
+import { toTimeString } from '../../src/clock/clock.js';
 
 describe('toTimeString', () => {
   it('converts timestamps to strings', () => {

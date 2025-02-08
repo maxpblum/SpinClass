@@ -1,4 +1,4 @@
-import {BlipStream, BlipReceiver} from './blip_stream.js';
+import { BlipStream, BlipReceiver } from './blip_stream.js';
 
 export class BlipSink<T> implements BlipReceiver<T> {
   constructor(private readonly handler: (blip: T) => void) {}

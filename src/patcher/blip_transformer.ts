@@ -1,6 +1,9 @@
-import {BlipReceiver, BlipStream} from './blip_stream.js';
+import { BlipReceiver, BlipStream } from './blip_stream.js';
 
-export class Transform<InBlip, OutBlip> extends BlipStream<OutBlip> implements BlipReceiver<InBlip> {
+export class Transform<InBlip, OutBlip>
+  extends BlipStream<OutBlip>
+  implements BlipReceiver<InBlip>
+{
   private handlers: ((h: OutBlip) => void)[] = [];
 
   constructor(private readonly transform: (inBlip: InBlip) => OutBlip) {

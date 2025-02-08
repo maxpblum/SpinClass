@@ -1,7 +1,7 @@
-import {PauserComponent} from './component.js';
+import { PauserComponent } from './component.js';
 
 function doTest() {
-  document.body.appendChild((new PauserComponent(document)).box);
+  document.body.appendChild(new PauserComponent(document).box);
 }
 
 const btn = document.createElement('button');

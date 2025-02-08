@@ -1,4 +1,4 @@
-import {makeStateMachine} from '../../src/patcher/state_machine.js';
+import { makeStateMachine } from '../../src/patcher/state_machine.js';
 
 describe('makeStateMachine', () => {
   it('returns a stateful function', () => {

@@ -80,6 +80,6 @@ const initialState: BeaterState = {
 export function makeBeater() {
   return makeStateMachine<BeaterState, BeaterEvent, BeaterOutput>(
     initialState,
-    beatsElapsed
+    beatsElapsed,
   );
 }

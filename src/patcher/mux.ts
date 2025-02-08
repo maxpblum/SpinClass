@@ -1,4 +1,4 @@
-import {BlipStream} from './blip_stream.js';
+import { BlipStream } from './blip_stream.js';
 
 export class Muxed<T> extends BlipStream<T> {
   private readonly handlers: ((v: T) => void)[] = [];

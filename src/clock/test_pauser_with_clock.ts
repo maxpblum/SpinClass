@@ -1,5 +1,5 @@
-import {PauserComponent} from '../pauser/component.js';
-import {ClockComponent} from '../clock/component.js';
+import { PauserComponent } from '../pauser/component.js';
+import { ClockComponent } from '../clock/component.js';
 
 function doTest() {
   const pauser = new PauserComponent(document);

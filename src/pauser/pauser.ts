@@ -15,13 +15,13 @@ type Pause = {
   readonly kind: 'pause';
 };
 
-export const PAUSE_EVENT: Pause = {kind: 'pause'};
+export const PAUSE_EVENT: Pause = { kind: 'pause' };
 
 type Resume = {
   readonly kind: 'resume';
 };
 
-export const RESUME_EVENT: Resume = {kind: 'resume'};
+export const RESUME_EVENT: Resume = { kind: 'resume' };
 
 type UpstreamTime = {
   readonly kind: 'upstreamtime';
@@ -29,7 +29,7 @@ type UpstreamTime = {
 };
 
 export function makeTimeEvent(time: DOMHighResTimeStamp): UpstreamTime {
-  return {kind: 'upstreamtime', time};
+  return { kind: 'upstreamtime', time };
 }
 
 export type PauserEvent = Pause | Resume | UpstreamTime;
@@ -62,6 +62,6 @@ function reducer(state: PauserState, input: PauserEvent) {
 export function makePauser() {
   return makeStateMachine<PauserState, PauserEvent, PauserOutput>(
     initialState,
-    reducer
+    reducer,
   );
 }
