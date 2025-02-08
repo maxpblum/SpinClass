@@ -3,6 +3,7 @@ import {
   beatsElapsed,
   makeTimeEvent,
   makeTempoEvent,
+  makeBeater,
 } from '../../src/beater/beater.js';
 
 describe('beatsElapsed', () => {
@@ -58,5 +59,13 @@ describe('beatsElapsed', () => {
         beatsElapsed: 5,
       },
     });
+  });
+});
+
+describe('makeBeater', () => {
+  it('works', () => {
+    // Just a basic test that the wiring is correct. We trust that makeStateMachine and beatsElapsed both do their job as tested elsewhere.
+    const beaterFunc = makeBeater();
+    expect(beaterFunc(makeTimeEvent(3)).beatsElapsed).toBeGreaterThan(0);
   });
 });
