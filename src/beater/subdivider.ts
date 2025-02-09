@@ -1,7 +1,7 @@
 import { BeaterOutput } from './beater.js';
 
 /** A rhythmic "point in time" in terms of measures and beats. */
-export interface MetricBeat {
+export interface CompletedMetricBeat {
   /** Measure number, as a one-indexed integer. */
   measure: number;
 
@@ -13,7 +13,10 @@ export interface MetricBeat {
 
   /** Sixteenth-note beat within the eighth note. */
   sixteenth: 1 | 2;
+}
 
+/** MetricBeat with partial remainder. */
+export interface MetricBeat extends CompletedMetricBeat {
   /** Completed fraction of the sixteenth note. */
   partial: number;
 }
