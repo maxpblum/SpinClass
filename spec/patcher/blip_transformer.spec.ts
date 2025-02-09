@@ -2,7 +2,7 @@ import { BlipSink } from '../../src/patcher/blip_sink.js';
 import { TriggerableStream } from '../../src/patcher/blip_stream.js';
 import { Transform } from '../../src/patcher/blip_transformer.js';
 
-fdescribe('Transform', () => {
+describe('Transform', () => {
   it('emits blips transformed', async () => {
     const inputNums = new TriggerableStream();
     const timesTwo = new Transform((num: number) => num * 2);
