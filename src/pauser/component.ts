@@ -23,7 +23,7 @@ export class PauserComponent {
     const timeTransformer = new Transform(makeTimeEvent);
     animationFrameStream.pipe(timeTransformer);
 
-    const pauserStream = new Transform(makePauser());
+    const pauserStream = new Transform<PauserEvent, PauserOutput>(makePauser());
 
     const pauserEl = new PauserElement(doc);
     const pauserSink = new BlipSink((output: PauserOutput) =>

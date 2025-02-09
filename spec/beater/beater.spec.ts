@@ -66,6 +66,6 @@ describe('makeBeater', () => {
   it('works', () => {
     // Just a basic test that the wiring is correct. We trust that makeStateMachine and beatsElapsed both do their job as tested elsewhere.
     const beaterFunc = makeBeater();
-    expect(beaterFunc(makeTimeEvent(3)).beatsElapsed).toBeGreaterThan(0);
+    expect(beaterFunc(makeTimeEvent(3))!.beatsElapsed).toBeGreaterThan(0);
   });
 });
