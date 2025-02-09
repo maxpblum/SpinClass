@@ -1,4 +1,5 @@
 import { BeaterOutput } from './beater.js';
+import { makeStateMachine } from '../../src/patcher/state_machine.js';
 
 /** A rhythmic "point in time" in terms of measures and beats. */
 export interface CompletedMetricBeat {
@@ -46,4 +47,23 @@ export function beaterOutputToMetric(bo: BeaterOutput): MetricBeat {
   const partial = 4 * (partialQuarter % 0.25);
 
   return { measure, quarter, eighth, sixteenth, partial };
+}
+
+/** Emits a CompletedMetricBeat if it's different from the previous one. */
+function getCompletedBeat(prev: CompletedMetricBeat, cur: CompletedMetricBeat) {
+  return prev.measure === cur.measure &&
+    prev.quarter === cur.quarter &&
+    prev.eighth === cur.eighth &&
+    prev.sixteenth === cur.sixteenth
+    ? { newState: cur }
+    : { newState: cur, output: cur };
+}
+
+/** Make function that emits a completed beat each time it receives one that's incremented by at least one sixteenth. */
+export function makeCompletedBeatTicker() {
+  return makeStateMachine<
+    CompletedMetricBeat,
+    CompletedMetricBeat,
+    CompletedMetricBeat
+  >({ measure: 0, quarter: 1, eighth: 1, sixteenth: 1 }, getCompletedBeat);
 }
