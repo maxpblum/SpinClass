@@ -1,9 +1,10 @@
 import { BlipStream } from './blip_stream.js';
 
 export class AnimationFrameStream extends BlipStream<DOMHighResTimeStamp> {
-  forEach(cb: (ts: DOMHighResTimeStamp) => void) {
+  constructor() {
+    super();
     function handleFrame(ts: DOMHighResTimeStamp) {
-      cb(ts);
+      this.emitValue(ts);
       window.requestAnimationFrame(handleFrame);
     }
     window.requestAnimationFrame(handleFrame);

@@ -3,8 +3,14 @@ export interface BlipReceiver<T> {
 }
 
 export class BlipStream<T> {
+  private readonly handlers: ((v: T) => void)[] = [];
+  protected emitValue(v: T) {
+    for (const h of this.handlers) {
+      h(v);
+    }
+  }
   forEach(cb: (t: T) => void) {
-    throw new Error('not implemented');
+    this.handlers.push(cb);
   }
   pipe(r: BlipReceiver<T>) {
     r.listen(this);
@@ -14,20 +20,14 @@ export class BlipStream<T> {
 export class BlipStreamFromArray<T> extends BlipStream<T> {
   constructor(private readonly arr: T[]) {
     super();
-  }
-  forEach(cb: (t: T) => void) {
-    this.arr.forEach(cb);
+    for (const v of arr) {
+      this.emitValue(v);
+    }
   }
 }
 
 export class TriggerableStream<T> extends BlipStream<T> {
-  private readonly handlers: ((v: T) => void)[] = [];
-
-  forEach(cb: (v: T) => void) {
-    this.handlers.push(cb);
-  }
-
   trigger(v: T) {
-    this.handlers.forEach((h) => h(v));
+    this.emitValue(v);
   }
 }
