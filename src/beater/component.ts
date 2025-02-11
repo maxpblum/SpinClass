@@ -4,14 +4,12 @@ import { Transform } from '../patcher/blip_transformer.js';
 import { Muxed } from '../patcher/mux.js';
 import { PauserOutput } from '../pauser/pauser.js';
 import {
-  BeaterEvent,
-  BeaterOutput,
-  makeBeater,
   NewTime,
-  makeTimeEvent,
   NewTempo,
+  makeTimeEvent,
   makeTempoEvent,
-} from './beater.js';
+} from '../interfaces.js';
+import { BeaterEvent, BeaterOutput, makeBeater } from './beater.js';
 import {
   beaterOutputToMetric,
   CompletedMetricBeat,
@@ -20,49 +18,39 @@ import {
 import { BeaterElement } from './element.js';
 
 export class BeaterComponent {
-  box: HTMLDivElement;
-  private element: BeaterElement;
-  receiver: BlipReceiver<PauserOutput>;
+  readonly box: HTMLDivElement;
+  private readonly element: BeaterElement;
+  private readonly beater = new Transform(makeBeater());
+  private readonly timeEvents = new Transform<PauserOutput, NewTime>(
+    (po: PauserOutput) => makeTimeEvent(po.elapsed),
+  );
+  private readonly tempoEvents = new Transform<NewTempo, NewTempo>((t) => t);
+  readonly timeReceiver: BlipReceiver<PauserOutput> = this.timeEvents;
+  readonly tempoReceiver: BlipReceiver<NewTempo> = this.tempoEvents;
+  private readonly beaterEvents = new Muxed<BeaterEvent>([
+    this.timeEvents,
+    this.tempoEvents,
+  ]);
+  private readonly totalBeatsUpdater = new BlipSink<BeaterOutput>(
+    (bo: BeaterOutput) => {
+      this.element.updateTotalBeats(bo.beatsElapsed);
+    },
+  );
+  private readonly subdivider = new Transform(beaterOutputToMetric);
+  private readonly ticker = new Transform(makeCompletedBeatTicker());
+  private readonly completedBeatUpdater = new BlipSink<CompletedMetricBeat>(
+    (b: CompletedMetricBeat) => {
+      this.element.updateCompletedMetricBeat(b);
+    },
+  );
 
   constructor(doc: Document) {
-    const timeEvents = new Transform<PauserOutput, NewTime>(
-      (po: PauserOutput) => makeTimeEvent(po.elapsed),
-    );
-
-    // Expose only the receiver interface publicly.
-    this.receiver = timeEvents;
-
-    const tempoEvents = new TriggerableStream<NewTempo>();
-
-    // Tempo seems "stuck," can't be moved. Investigate via test page.
-    const element = new BeaterElement(doc, (tempoBpm) =>
-      setTimeout(() => tempoEvents.trigger(makeTempoEvent(tempoBpm)), 0),
-    );
-
-    const beaterEvents = new Muxed<BeaterEvent>([timeEvents, tempoEvents]);
-
-    this.box = element.box;
-
-    const beater = new Transform(makeBeater());
-    beaterEvents.pipe(beater);
-
-    beater.pipe(
-      new BlipSink<BeaterOutput>((bo: BeaterOutput) => {
-        element.updateTempo(bo.tempoBpm);
-        element.updateTotalBeats(bo.beatsElapsed);
-      }),
-    );
-
-    const subdivider = new Transform(beaterOutputToMetric);
-    beater.pipe(subdivider);
-
-    const ticker = new Transform(makeCompletedBeatTicker());
-    subdivider.pipe(ticker);
-
-    ticker.pipe(
-      new BlipSink<CompletedMetricBeat>((b: CompletedMetricBeat) => {
-        element.updateCompletedMetricBeat(b);
-      }),
-    );
+    this.element = new BeaterElement(doc);
+    this.box = this.element.box;
+    this.beaterEvents.pipe(this.beater);
+    this.beater.pipe(this.totalBeatsUpdater);
+    this.beater.pipe(this.subdivider);
+    this.subdivider.pipe(this.ticker);
+    this.ticker.pipe(this.completedBeatUpdater);
   }
 }

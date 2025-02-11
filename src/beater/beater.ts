@@ -1,4 +1,11 @@
 import { makeStateMachine } from '../patcher/state_machine.js';
+import {
+  NewTime,
+  NewTempo,
+  makeTimeEvent,
+  makeTempoEvent,
+  DEFAULT_TEMPO_BPM,
+} from '../interfaces.js';
 
 export interface BeaterState {
   lastTimeMs: DOMHighResTimeStamp;
@@ -6,24 +13,6 @@ export interface BeaterState {
   beatsElapsedAtLastTempoChange: number;
   tempoBpm: number;
   beatsElapsed: number;
-}
-
-export interface NewTime {
-  kind: 'newtime';
-  newTimeMs: DOMHighResTimeStamp;
-}
-
-export function makeTimeEvent(ts: DOMHighResTimeStamp): NewTime {
-  return { kind: 'newtime', newTimeMs: ts };
-}
-
-export interface NewTempo {
-  kind: 'newtempo';
-  newTempoBpm: number;
-}
-
-export function makeTempoEvent(tempoBpm: number): NewTempo {
-  return { kind: 'newtempo', newTempoBpm: tempoBpm };
 }
 
 export type BeaterEvent = NewTime | NewTempo;
@@ -73,7 +62,7 @@ const initialState: BeaterState = {
   lastTimeMs: 0,
   lastTempoChangeMs: 0,
   beatsElapsedAtLastTempoChange: 0,
-  tempoBpm: 100,
+  tempoBpm: DEFAULT_TEMPO_BPM,
   beatsElapsed: 0,
 };
 

@@ -16,7 +16,7 @@
     "build": "rm -rf dist && tsc",
     "lint": "eslint src/* spec/*",
     "test": "npm run build && jasmine",
-    "fix": "prettier -w **/*.ts"
+    "fix": "prettier -w src/**/*.ts spec/**/*.ts"
   },
   "type": "module"
 }

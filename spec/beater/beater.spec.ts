@@ -1,8 +1,7 @@
+import { makeTimeEvent, makeTempoEvent } from '../../src/interfaces.js';
 import {
   BeaterState,
   beatsElapsed,
-  makeTimeEvent,
-  makeTempoEvent,
   makeBeater,
 } from '../../src/beater/beater.js';
 

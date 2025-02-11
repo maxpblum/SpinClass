@@ -42,28 +42,9 @@ export class BeaterElement {
   private whichEighthBeat: WhichBeat;
   private whichSixteenthBeat: WhichBeat;
 
-  constructor(
-    private doc: Document,
-    onTempoChange: (tempoBpm: number) => void,
-  ) {
+  constructor(private doc: Document) {
     this.box = doc.createElement('div');
     this.box.classList.add('beater-box');
-
-    this.tempoInput = doc.createElement('input');
-    this.tempoInput.classList.add('beater-tempo-input');
-    this.tempoInput.type = 'range';
-    this.tempoInput.min = '1';
-    this.tempoInput.max = '600';
-    this.tempoInput.step = '1';
-    this.tempoInput.addEventListener('change', () => {
-      onTempoChange(this.tempoInput.valueAsNumber);
-    });
-    this.box.appendChild(this.tempoInput);
-
-    this.tempoLabel = doc.createElement('div');
-    this.tempoLabel.classList.add('beater-tempo-label');
-    this.updateTempoLabel();
-    this.box.appendChild(this.tempoLabel);
 
     this.totalBeatsLabel = doc.createElement('div');
     this.totalBeatsLabel.classList.add('beater-total-beats-label');
@@ -98,15 +79,6 @@ export class BeaterElement {
       eighth: 1,
       sixteenth: 1,
     });
-  }
-
-  updateTempo(num: number) {
-    this.tempoInput.valueAsNumber = num;
-    this.updateTempoLabel();
-  }
-
-  updateTempoLabel() {
-    this.tempoLabel.innerText = `Tempo: ${this.tempoInput.value}`;
   }
 
   updateTotalBeats(num: number) {
