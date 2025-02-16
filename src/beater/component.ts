@@ -38,6 +38,7 @@ export class BeaterComponent {
   );
   private readonly subdivider = new Transform(beaterOutputToMetric);
   private readonly ticker = new Transform(makeCompletedBeatTicker());
+  readonly output = this.ticker;
   private readonly completedBeatUpdater = new BlipSink<CompletedMetricBeat>(
     (b: CompletedMetricBeat) => {
       this.element.updateCompletedMetricBeat(b);
