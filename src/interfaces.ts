@@ -22,3 +22,30 @@ export interface NewTempo {
 export function makeTempoEvent(tempoBpm: number): NewTempo {
   return { kind: 'newtempo', newTempoBpm: tempoBpm };
 }
+
+/** Event type for a high beep sound. */
+export interface BeepHigh {
+  kind: 'high';
+}
+
+/** Event for a high beep sound. */
+export const BEEP_HIGH: BeepHigh = { kind: 'high' };
+
+/** Event type for a mid beep sound. */
+export interface BeepMid {
+  kind: 'mid';
+}
+
+/** Event for a mid beep sound. */
+export const BEEP_MID = { kind: 'mid' };
+
+/** Event type for a low beep sound. */
+export interface BeepLow {
+  kind: 'low';
+}
+
+/** Event for a low beep sound. */
+export const BEEP_LOW = { kind: 'low' };
+
+/** Event type for a beep sound. */
+export type BeepEvent = BeepHigh|BeepMid|BeepLow;
