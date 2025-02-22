@@ -22,7 +22,7 @@ export class BeaterComponent {
   private readonly element: BeaterElement;
   private readonly beater = new Transform(makeBeater());
   private readonly timeEvents = new Transform<PauserOutput, NewTime>(
-    (po: PauserOutput) => makeTimeEvent(po.elapsed),
+    (po: PauserOutput) => po.paused ? null : makeTimeEvent(po.elapsed),
   );
   private readonly tempoEvents = new Transform<NewTempo, NewTempo>((t) => t);
   readonly timeReceiver: BlipReceiver<PauserOutput> = this.timeEvents;
