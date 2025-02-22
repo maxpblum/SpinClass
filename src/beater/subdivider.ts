@@ -1,20 +1,6 @@
 import { BeaterOutput } from './beater.js';
-import { makeStateMachine } from '../../src/patcher/state_machine.js';
-
-/** A rhythmic "point in time" in terms of measures and beats. */
-export interface CompletedMetricBeat {
-  /** Measure number, as a one-indexed integer. */
-  measure: number;
-
-  /** Quarter-note beat within the measure. */
-  quarter: 1 | 2 | 3 | 4;
-
-  /** Eighth-note beat within the quarter note. */
-  eighth: 1 | 2;
-
-  /** Sixteenth-note beat within the eighth note. */
-  sixteenth: 1 | 2;
-}
+import { CompletedMetricBeat } from '../interfaces.js';
+import { makeStateMachine } from '../patcher/state_machine.js';
 
 /** MetricBeat with partial remainder. */
 export interface MetricBeat extends CompletedMetricBeat {

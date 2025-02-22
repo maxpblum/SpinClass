@@ -1,4 +1,4 @@
-import { CompletedMetricBeat } from './subdivider.js';
+import { CompletedMetricBeat } from '../interfaces.js';
 
 const GREEN_CIRCLE = '🟢';
 const WHITE_CIRCLE = '⚪';

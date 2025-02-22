@@ -37,7 +37,7 @@ export interface BeepMid {
 }
 
 /** Event for a mid beep sound. */
-export const BEEP_MID = { kind: 'mid' };
+export const BEEP_MID: BeepMid = { kind: 'mid' };
 
 /** Event type for a low beep sound. */
 export interface BeepLow {
@@ -45,7 +45,22 @@ export interface BeepLow {
 }
 
 /** Event for a low beep sound. */
-export const BEEP_LOW = { kind: 'low' };
+export const BEEP_LOW: BeepLow = { kind: 'low' };
 
 /** Event type for a beep sound. */
 export type BeepEvent = BeepHigh|BeepMid|BeepLow;
+
+/** A rhythmic "point in time" in terms of measures and beats. */
+export interface CompletedMetricBeat {
+  /** Measure number, as a one-indexed integer. */
+  measure: number;
+
+  /** Quarter-note beat within the measure. */
+  quarter: 1 | 2 | 3 | 4;
+
+  /** Eighth-note beat within the quarter note. */
+  eighth: 1 | 2;
+
+  /** Sixteenth-note beat within the eighth note. */
+  sixteenth: 1 | 2;
+}

@@ -4,6 +4,7 @@ import { Transform } from '../patcher/blip_transformer.js';
 import { Muxed } from '../patcher/mux.js';
 import { PauserOutput } from '../pauser/pauser.js';
 import {
+  CompletedMetricBeat,
   NewTime,
   NewTempo,
   makeTimeEvent,
@@ -12,7 +13,6 @@ import {
 import { BeaterEvent, BeaterOutput, makeBeater } from './beater.js';
 import {
   beaterOutputToMetric,
-  CompletedMetricBeat,
   makeCompletedBeatTicker,
 } from './subdivider.js';
 import { BeaterElement } from './element.js';

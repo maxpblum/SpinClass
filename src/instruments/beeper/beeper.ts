@@ -1,5 +1,13 @@
 import { BlipSink } from '../../patcher/blip_sink.js';
-import { BeepEvent } from '../../interfaces.js';
+import { BlipReceiver } from '../../patcher/blip_stream.js';
+import { Transform } from '../../patcher/blip_transformer.js';
+import {
+  BeepEvent,
+  BEEP_HIGH,
+  BEEP_MID,
+  BEEP_LOW,
+  CompletedMetricBeat,
+} from '../../interfaces.js';
 
 class Beeper {
   private readonly oscNode: OscillatorNode;
@@ -16,9 +24,10 @@ class Beeper {
   }
 
   private beep(freq: number) {
-    this.oscNode.frequency.setValueAtTime(freq, this.ctx.currentTime);
-    this.gainNode.gain.setValueAtTime(0.5, this.ctx.currentTime);
-    this.gainNode.gain.setValueAtTime(0, this.ctx.currentTime + 0.05);
+    const currentTime = this.ctx.currentTime;
+    this.oscNode.frequency.setValueAtTime(freq, currentTime);
+    this.gainNode.gain.setValueAtTime(0.5, currentTime);
+    this.gainNode.gain.setValueAtTime(0, currentTime + 0.05);
   }
 
   beepHigh() {
@@ -39,14 +48,35 @@ const makeHandler: (beeper: Beeper) => (e: BeepEvent) => void =
     switch (e.kind) {
       case 'high':
         beeper.beepHigh();
+        return;
       case 'mid':
         beeper.beepMid();
+        return;
       case 'low':
         beeper.beepLow();
+        return;
     }
   };
 
-/** BlipSink that can emit high, medium, or low beeps. */
-export const makeBeeper: (ctx: AudioContext) => BlipSink<BeepEvent> = (
+function beatToBeep(beat: CompletedMetricBeat): BeepEvent {
+  if (beat.sixteenth === 2 || beat.eighth === 2) {
+    // Not a quarter-note beat.
+    return BEEP_LOW;
+  }
+  if (beat.quarter === 1) {
+    // Downbeat.
+    return BEEP_HIGH;
+  }
+  // Non-downbeat quarter-note beat.
+  return BEEP_MID;
+}
+
+/** Blip receiver that emits beeps according to beat position. */
+export function makeTempoBeeper(
   ctx: AudioContext
-) => new BlipSink<BeepEvent>(makeHandler(new Beeper(ctx)));
+): BlipReceiver<CompletedMetricBeat> {
+  const beepSink = new BlipSink<BeepEvent>(makeHandler(new Beeper(ctx)));
+  const transform = new Transform<CompletedMetricBeat, BeepEvent>(beatToBeep);
+  transform.pipe(beepSink);
+  return transform;
+}
