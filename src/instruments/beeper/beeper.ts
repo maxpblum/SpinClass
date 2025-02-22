@@ -1,13 +1,6 @@
-import { BlipSink } from '../../patcher/blip_sink.js';
 import { BlipReceiver } from '../../patcher/blip_stream.js';
-import { Transform } from '../../patcher/blip_transformer.js';
-import {
-  BeepEvent,
-  BEEP_HIGH,
-  BEEP_MID,
-  BEEP_LOW,
-  CompletedMetricBeat,
-} from '../../interfaces.js';
+import { CompletedMetricBeat } from '../../interfaces.js';
+import { makeDrumKit } from '../drums/kit.js';
 
 class Beeper {
   private readonly oscNode: OscillatorNode;
@@ -43,40 +36,33 @@ class Beeper {
   }
 }
 
-const makeHandler: (beeper: Beeper) => (e: BeepEvent) => void =
-  (beeper: Beeper) => (e: BeepEvent) => {
-    switch (e.kind) {
-      case 'high':
-        beeper.beepHigh();
-        return;
-      case 'mid':
-        beeper.beepMid();
-        return;
-      case 'low':
-        beeper.beepLow();
-        return;
-    }
-  };
+enum Level {
+  LOW,
+  MID,
+  HIGH,
+}
 
-function beatToBeep(beat: CompletedMetricBeat): BeepEvent {
+function beatToBeep(beat: CompletedMetricBeat): readonly Level[] {
   if (beat.sixteenth === 2 || beat.eighth === 2) {
     // Not a quarter-note beat.
-    return BEEP_LOW;
+    return [Level.LOW];
   }
   if (beat.quarter === 1) {
     // Downbeat.
-    return BEEP_HIGH;
+    return [Level.HIGH];
   }
   // Non-downbeat quarter-note beat.
-  return BEEP_MID;
+  return [Level.MID];
 }
 
 /** Blip receiver that emits beeps according to beat position. */
 export function makeTempoBeeper(
   ctx: AudioContext
 ): BlipReceiver<CompletedMetricBeat> {
-  const beepSink = new BlipSink<BeepEvent>(makeHandler(new Beeper(ctx)));
-  const transform = new Transform<CompletedMetricBeat, BeepEvent>(beatToBeep);
-  transform.pipe(beepSink);
-  return transform;
+  const beeper = new Beeper(ctx);
+  return makeDrumKit(ctx, beatToBeep, {
+    [Level.LOW]: () => () => beeper.beepLow(),
+    [Level.MID]: () => () => beeper.beepMid(),
+    [Level.HIGH]: () => () => beeper.beepHigh(),
+  });
 }
