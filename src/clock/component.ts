@@ -3,7 +3,7 @@ import { ClockElement } from './element.js';
 import { BlipSink } from '../patcher/blip_sink.js';
 import { TriggerableStream } from '../patcher/blip_stream.js';
 import { Transform } from '../patcher/blip_transformer.js';
-import { PauserOutput } from '../pauser/pauser.js';
+import { PauserOutput } from '../interfaces.js';
 
 export class ClockComponent extends BlipSink<PauserOutput> {
   box: HTMLDivElement;

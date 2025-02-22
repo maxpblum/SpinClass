@@ -2,11 +2,11 @@ import { BlipSink } from '../patcher/blip_sink.js';
 import { BlipReceiver, TriggerableStream } from '../patcher/blip_stream.js';
 import { Transform } from '../patcher/blip_transformer.js';
 import { Muxed } from '../patcher/mux.js';
-import { PauserOutput } from '../pauser/pauser.js';
 import {
   CompletedMetricBeat,
   NewTime,
   NewTempo,
+  PauserOutput,
   makeTimeEvent,
   makeTempoEvent,
 } from '../interfaces.js';

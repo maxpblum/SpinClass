@@ -1,14 +1,10 @@
 import { makeStateMachine } from '../patcher/state_machine.js';
+import { PauserOutput } from '../interfaces.js';
 
 interface PauserState {
   readonly paused: boolean;
   readonly elapsed: DOMHighResTimeStamp;
   readonly lastUpstreamTime: DOMHighResTimeStamp;
-}
-
-export interface PauserOutput {
-  readonly paused: boolean;
-  readonly elapsed: DOMHighResTimeStamp;
 }
 
 type Pause = {

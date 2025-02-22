@@ -1,4 +1,4 @@
-import { PauserOutput } from './pauser.js';
+import { PauserOutput } from '../interfaces.js';
 import { TriggerableStream } from '../patcher/blip_stream.js';
 
 export class PauserElement {

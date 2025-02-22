@@ -1,7 +1,7 @@
+import { PauserOutput } from '../interfaces.js';
 import {
   makeTimeEvent,
   makePauser,
-  PauserOutput,
   PAUSE_EVENT,
   RESUME_EVENT,
   PauserEvent,

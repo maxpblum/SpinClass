@@ -1,10 +1,10 @@
+import { PauserOutput } from '../../src/interfaces.js';
 import {
   makePauser,
   makeTimeEvent,
   PAUSE_EVENT,
   RESUME_EVENT,
   PauserEvent,
-  PauserOutput,
 } from '../../src/pauser/pauser.js';
 import { Transform } from '../../src/patcher/blip_transformer.js';
 import { ArraySink } from '../../src/patcher/blip_sink.js';

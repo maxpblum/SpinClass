@@ -64,3 +64,9 @@ export interface CompletedMetricBeat {
   /** Sixteenth-note beat within the eighth note. */
   sixteenth: 1 | 2;
 }
+
+/** Relative time in ms and whether we're paused. */
+export interface PauserOutput {
+  readonly paused: boolean;
+  readonly elapsed: DOMHighResTimeStamp;
+}
