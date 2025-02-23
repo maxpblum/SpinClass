@@ -1,4 +1,9 @@
-import { TriggerableStream, BlipSink, Transform, makeStateMachine } from '../src/blip.js';
+import {
+  TriggerableStream,
+  BlipSink,
+  Transform,
+  makeStateMachine,
+} from '../src/blip.js';
 
 describe('BlipSink', () => {
   it('runs the handler on incoming blips', async () => {
