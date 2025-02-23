@@ -1,5 +1,5 @@
 import { CompletedMetricBeat } from '../../interfaces.js';
-import { BlipReceiver, TriggerableStream, BlipSink } from '../../blip.js';
+import { BlipReceiver, BlipSink } from '../../blip.js';
 
 /** Type for custom functions that take beats and decide which drums to play. */
 export type DrumDecider<DrumEnum extends number> = (

@@ -1,3 +1,7 @@
+import { BlipReceiver } from '../../blip.js';
+import { CompletedMetricBeat } from '../../interfaces.js';
+import { makeDrumKit, DrumDecider } from '../drums/kit.js';
+
 // Code in this file is adapted from a ChatGPT response.
 
 /** Create a whitenoise buffer. */
@@ -35,6 +39,7 @@ export function makeKick(ctx: AudioContext) {
 /** Create an 808 snare drum. */
 export function makeSnare(ctx: AudioContext) {
   const noise = ctx.createBufferSource();
+  noise.loop = true;
   noise.buffer = createWhiteNoise(ctx);
   const noiseFilter = ctx.createBiquadFilter();
   noiseFilter.type = 'highpass';
@@ -60,16 +65,19 @@ export function makeSnare(ctx: AudioContext) {
 
   return () => {
     noiseGain.gain.setValueAtTime(1, ctx.currentTime);
-    noiseGain.gain.exponentialRampToValueAtTime(0, ctx.currentTime + 0.2);
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.19);
+    noiseGain.gain.setValueAtTime(0, ctx.currentTime + 0.2);
 
     oscGain.gain.setValueAtTime(1, ctx.currentTime);
-    oscGain.gain.exponentialRampToValueAtTime(0, ctx.currentTime + 0.2);
+    oscGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.19);
+    oscGain.gain.setValueAtTime(0, ctx.currentTime + 0.2);
   };
 }
 
 /** Create an 808 hi-hat drum. */
 export function makeHiHat(ctx: AudioContext) {
   const noise = ctx.createBufferSource();
+  noise.loop = true;
   noise.buffer = createWhiteNoise(ctx);
 
   const filter = ctx.createBiquadFilter();
@@ -86,13 +94,15 @@ export function makeHiHat(ctx: AudioContext) {
 
   return () => {
     gain.gain.setValueAtTime(0.5, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0, ctx.currentTime + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.049);
+    gain.gain.setValueAtTime(0, ctx.currentTime + 0.05);
   };
 }
 
 /** Create an 808 crash cymbal. */
 export function makeCrash(ctx: AudioContext) {
   const noise = ctx.createBufferSource();
+  noise.loop = true;
   noise.buffer = createWhiteNoise(ctx);
 
   const filter = ctx.createBiquadFilter();
@@ -109,6 +119,36 @@ export function makeCrash(ctx: AudioContext) {
 
   return () => {
     gain.gain.setValueAtTime(1, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0, ctx.currentTime + 1.5);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.49);
+    gain.gain.setValueAtTime(0, ctx.currentTime + 1.5);
   };
+}
+
+enum Drums808 {
+  KICK,
+  SNARE,
+  HIHAT,
+  CRASH,
+}
+
+const decider: DrumDecider<Drums808> = (beat) => {
+  if (beat.sixteenth !== 1 || beat.eighth !== 1) {
+    return [Drums808.HIHAT];
+  }
+  if (beat.quarter % 2 === 0) {
+    return [Drums808.HIHAT, Drums808.SNARE];
+  }
+  return beat.measure % 4 === 1
+    ? [Drums808.CRASH, Drums808.HIHAT, Drums808.KICK]
+    : [Drums808.HIHAT, Drums808.KICK];
+};
+
+/** Make a drum kit imitating an 808. */
+export function make808(ctx: AudioContext): BlipReceiver<CompletedMetricBeat> {
+  return makeDrumKit<Drums808>(ctx, decider, {
+    [Drums808.KICK]: makeKick(ctx),
+    [Drums808.SNARE]: makeSnare(ctx),
+    [Drums808.HIHAT]: makeHiHat(ctx),
+    [Drums808.CRASH]: makeCrash(ctx),
+  });
 }
