@@ -138,12 +138,14 @@ enum Drums808 {
 
 const decider: DrumDecider<Drums808> = (beat) => {
   if (beat.sixteenth !== 1 || beat.eighth !== 1) {
+    // On 16th or 8th off-beats, one of the above will be 2.
     return [Drums808.HIHAT];
   }
   if (beat.quarter % 2 === 0) {
+    // We're right on quarter beat 2 or 4.
     return [Drums808.HIHAT, Drums808.SNARE];
   }
-  return beat.measure % 4 === 1
+  return beat.measure % 4 === 1 && beat.quarter === 1
     ? [Drums808.CRASH, Drums808.HIHAT, Drums808.KICK]
     : [Drums808.HIHAT, Drums808.KICK];
 };
