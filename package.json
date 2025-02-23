@@ -17,7 +17,7 @@
     "lint": "eslint src/* spec/*",
     "lintfix": "eslint --fix src/* spec/*",
     "test": "npm run build && jasmine",
-    "fix": "prettier -w src/**/*.ts spec/**/*.ts"
+    "fix": "prettier -w $(find src -type f -name '*.ts' && find spec -type f -name '*.ts')"
   },
   "type": "module"
 }
