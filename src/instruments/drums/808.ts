@@ -23,6 +23,7 @@ export function makeKick(ctx: AudioContext) {
   osc.type = 'sine';
   osc.connect(gain);
   gain.connect(ctx.destination);
+  gain.gain.setValueAtTime(0, ctx.currentTime);
   osc.start();
 
   return () => {
@@ -46,6 +47,7 @@ export function makeSnare(ctx: AudioContext) {
   noiseFilter.frequency.setValueAtTime(1000, ctx.currentTime);
 
   const noiseGain = ctx.createGain();
+  noiseGain.gain.setValueAtTime(0, ctx.currentTime);
 
   noise.connect(noiseFilter);
   noiseFilter.connect(noiseGain);
@@ -55,6 +57,7 @@ export function makeSnare(ctx: AudioContext) {
 
   const osc = ctx.createOscillator();
   const oscGain = ctx.createGain();
+  oscGain.gain.setValueAtTime(0, ctx.currentTime);
   osc.type = 'sine';
   osc.frequency.setValueAtTime(400, ctx.currentTime);
 
@@ -85,6 +88,7 @@ export function makeHiHat(ctx: AudioContext) {
   filter.frequency.setValueAtTime(5000, ctx.currentTime);
 
   const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0, ctx.currentTime);
 
   noise.connect(filter);
   filter.connect(gain);
@@ -110,6 +114,7 @@ export function makeCrash(ctx: AudioContext) {
   filter.frequency.setValueAtTime(8000, ctx.currentTime);
 
   const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0, ctx.currentTime);
 
   noise.connect(filter);
   filter.connect(gain);
