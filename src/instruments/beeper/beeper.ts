@@ -61,8 +61,8 @@ export function makeTempoBeeper(
 ): BlipReceiver<CompletedMetricBeat> {
   const beeper = new Beeper(ctx);
   return makeDrumKit(ctx, beatToBeep, {
-    [Level.LOW]: () => () => beeper.beepLow(),
-    [Level.MID]: () => () => beeper.beepMid(),
-    [Level.HIGH]: () => () => beeper.beepHigh(),
+    [Level.LOW]: () => beeper.beepLow(),
+    [Level.MID]: () => beeper.beepMid(),
+    [Level.HIGH]: () => beeper.beepHigh(),
   });
 }
