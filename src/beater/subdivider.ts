@@ -1,6 +1,6 @@
 import { BeaterOutput } from './beater.js';
 import { CompletedMetricBeat } from '../interfaces.js';
-import { makeStateMachine } from '../patcher/state_machine.js';
+import { makeStateMachine } from '../blip.js';
 
 /** MetricBeat with partial remainder. */
 export interface MetricBeat extends CompletedMetricBeat {
@@ -8,7 +8,9 @@ export interface MetricBeat extends CompletedMetricBeat {
   partial: number;
 }
 
-/** Transforms BeaterOutput into MetricBeat. Assumes time signature is always 4/4. */
+/**
+ * Transforms BeaterOutput into MetricBeat. Assumes time signature is always 4/4.
+ */
 export function beaterOutputToMetric(bo: BeaterOutput): MetricBeat {
   // Which one-indexed measure is currently happening.
   const measure = 1 + Math.floor(bo.beatsElapsed / 4);
@@ -35,7 +37,9 @@ export function beaterOutputToMetric(bo: BeaterOutput): MetricBeat {
   return { measure, quarter, eighth, sixteenth, partial };
 }
 
-/** Emits a CompletedMetricBeat if it's different from the previous one. */
+/**
+ * Emits a CompletedMetricBeat if it's different from the previous one.
+ */
 function getCompletedBeat(prev: CompletedMetricBeat, cur: CompletedMetricBeat) {
   return prev.measure === cur.measure &&
     prev.quarter === cur.quarter &&
@@ -45,7 +49,10 @@ function getCompletedBeat(prev: CompletedMetricBeat, cur: CompletedMetricBeat) {
     : { newState: cur, output: cur };
 }
 
-/** Make function that emits a completed beat each time it receives one that's incremented by at least one sixteenth. */
+/**
+ * Make function that emits a completed beat each time it receives one that's
+ * incremented by at least one sixteenth.
+ */
 export function makeCompletedBeatTicker() {
   return makeStateMachine<
     CompletedMetricBeat,

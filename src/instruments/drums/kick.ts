@@ -1,11 +1,16 @@
-import { BlipSink } from '../../patcher/blip_sink.js';
+// I expect to delete this file.
+/* eslint-disable */
+import { BlipSink } from '../../blip.js';
 
 const LOW_OSC_START_FREQ = 50;
 const LOW_OSC_END_FREQ = 10;
 const LOW_OSC_SUSTAIN = 0.05;
 const LOW_OSC_DECAY = 0.05;
 
-/** Make a kick drum sound right now. */
+/**
+ * Make a kick drum sound right now.
+ * @param ctx
+ */
 export function makeKickDrum(ctx: AudioContext): BlipSink<unknown> {
   const lowOsc = ctx.createOscillator();
   lowOsc.type = 'square';

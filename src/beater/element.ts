@@ -32,8 +32,11 @@ class WhichBeat {
   }
 }
 
+/** UI element for a "beater" that tracks and emits current beat information. */
 export class BeaterElement {
+  /** Outer div to attach to DOM. */
   box: HTMLDivElement;
+
   private tempoInput: HTMLInputElement;
   private tempoLabel: HTMLDivElement;
   private totalBeatsLabel: HTMLDivElement;
@@ -81,10 +84,12 @@ export class BeaterElement {
     });
   }
 
+  /** Set the total number of beats elapsed. */
   updateTotalBeats(num: number) {
     this.totalBeatsLabel.innerText = `B: ${num}`;
   }
 
+  /** Set the completed-beats state. */
   updateCompletedMetricBeat(b: CompletedMetricBeat) {
     this.measureLabel.innerText = `M: ${b.measure}`;
     this.whichQuarterBeat.updateBeat(b.quarter);

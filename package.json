@@ -15,6 +15,7 @@
   "scripts": {
     "build": "rm -rf dist && tsc",
     "lint": "eslint src/* spec/*",
+    "lintfix": "eslint --fix src/* spec/*",
     "test": "npm run build && jasmine",
     "fix": "prettier -w src/**/*.ts spec/**/*.ts"
   },

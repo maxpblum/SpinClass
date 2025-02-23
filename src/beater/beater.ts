@@ -1,27 +1,35 @@
-import { makeStateMachine } from '../patcher/state_machine.js';
-import {
-  NewTime,
-  NewTempo,
-  makeTimeEvent,
-  makeTempoEvent,
-  DEFAULT_TEMPO_BPM,
-} from '../interfaces.js';
+import { makeStateMachine } from '../blip.js';
+import { NewTime, NewTempo, DEFAULT_TEMPO_BPM } from '../interfaces.js';
 
+/** Internal Beater state. */
 export interface BeaterState {
+  /** Last total time elapsed in milliseconds. */
   lastTimeMs: DOMHighResTimeStamp;
+  /** What the total time elapsed was when the tempo last changed. */
   lastTempoChangeMs: DOMHighResTimeStamp;
+  /** How many total beats had elapsed as of the last tempo change. */
   beatsElapsedAtLastTempoChange: number;
+  /** Current tempo in beats per minute. */
   tempoBpm: number;
+  /** How many total beats have elapsed since the start. */
   beatsElapsed: number;
 }
 
+/** Valid input for a Beater. */
 export type BeaterEvent = NewTime | NewTempo;
 
+/** Beat event. */
 export interface BeaterOutput {
+  /** Current tempo in beats per minute. */
   tempoBpm: number;
+  /** How many total beats have elapsed since the start. */
   beatsElapsed: number;
 }
 
+/**
+ * Get next beat event and next internal beater state given input event and
+ * previous state.
+ */
 export function beatsElapsed(state: BeaterState, be: BeaterEvent) {
   if (be.kind === 'newtime') {
     const msSinceLastTempoChange = be.newTimeMs - state.lastTempoChangeMs;
@@ -66,6 +74,10 @@ const initialState: BeaterState = {
   beatsElapsed: 0,
 };
 
+/**
+ * Make stateful function that takes time/pause input events and returns beat
+ * events, handling state internally.
+ */
 export function makeBeater() {
   return makeStateMachine<BeaterState, BeaterEvent, BeaterOutput>(
     initialState,

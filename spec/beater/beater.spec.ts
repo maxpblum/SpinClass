@@ -1,9 +1,5 @@
 import { makeTimeEvent, makeTempoEvent } from '../../src/interfaces.js';
-import {
-  BeaterState,
-  beatsElapsed,
-  makeBeater,
-} from '../../src/beater/beater.js';
+import { beatsElapsed, makeBeater } from '../../src/beater/beater.js';
 
 describe('beatsElapsed', () => {
   it('emits expected data for new time', () => {

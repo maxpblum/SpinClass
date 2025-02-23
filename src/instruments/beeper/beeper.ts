@@ -1,4 +1,4 @@
-import { BlipReceiver } from '../../patcher/blip_stream.js';
+import { BlipReceiver } from '../../blip.js';
 import { CompletedMetricBeat } from '../../interfaces.js';
 import { makeDrumKit } from '../drums/kit.js';
 

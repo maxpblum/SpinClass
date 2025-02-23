@@ -1,4 +1,4 @@
-import { makeStateMachine } from '../patcher/state_machine.js';
+import { makeStateMachine } from '../blip.js';
 import { PauserOutput } from '../interfaces.js';
 
 interface PauserState {
@@ -11,12 +11,14 @@ type Pause = {
   readonly kind: 'pause';
 };
 
+/** Event representing a new pause. */
 export const PAUSE_EVENT: Pause = { kind: 'pause' };
 
 type Resume = {
   readonly kind: 'resume';
 };
 
+/** Event representing resuming after pausing. */
 export const RESUME_EVENT: Resume = { kind: 'resume' };
 
 type UpstreamTime = {
@@ -24,10 +26,12 @@ type UpstreamTime = {
   readonly time: DOMHighResTimeStamp;
 };
 
+/** Convert ms timestamp into a time event. */
 export function makeTimeEvent(time: DOMHighResTimeStamp): UpstreamTime {
   return { kind: 'upstreamtime', time };
 }
 
+/** Valid input event for a Pauser. */
 export type PauserEvent = Pause | Resume | UpstreamTime;
 
 const initialState: PauserState = {
@@ -55,6 +59,10 @@ function reducer(state: PauserState, input: PauserEvent) {
   };
 }
 
+/**
+ * Make function that takes pauser inputs and returns pauser outputs, managing
+ * state internally.
+ */
 export function makePauser() {
   return makeStateMachine<PauserState, PauserEvent, PauserOutput>(
     initialState,

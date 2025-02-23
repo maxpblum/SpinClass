@@ -25,7 +25,7 @@ export default [
             ClassExpression: true,
             FunctionDeclaration: true,
             FunctionExpression: true,
-            MethodDefinition: false,
+            MethodDefinition: true,
           },
           contexts: [
             "ArrowFunctionExpression",
@@ -42,8 +42,11 @@ export default [
             "TSTypeAliasDeclaration",
             "VariableDeclaration",
           ],
+          checkConstructors: false,
         },
       ],
+      "jsdoc/require-returns": "off",
+      "jsdoc/require-param": "off",
     },
   },
 ];

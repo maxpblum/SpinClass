@@ -1,5 +1,10 @@
 import { DEFAULT_TEMPO_BPM } from '../interfaces.js';
 
+/**
+ * Factory for a tempo control UI element.
+ * @param doc The HTML document.
+ * @param onTempoChange External handler for when the user chooses a new tempo.
+ */
 export function getTempoElement(
   doc: Document,
   onTempoChange: (tempoBpm: number) => void,

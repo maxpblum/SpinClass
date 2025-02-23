@@ -2,13 +2,10 @@ import { PauserOutput } from '../../src/interfaces.js';
 import {
   makePauser,
   makeTimeEvent,
-  PAUSE_EVENT,
   RESUME_EVENT,
   PauserEvent,
 } from '../../src/pauser/pauser.js';
-import { Transform } from '../../src/patcher/blip_transformer.js';
-import { ArraySink } from '../../src/patcher/blip_sink.js';
-import { TriggerableStream } from '../../src/patcher/blip_stream.js';
+import { Transform, ArraySink, TriggerableStream } from '../../src/blip.js';
 
 describe('pauser graph', () => {
   it('does not increment while paused', () => {

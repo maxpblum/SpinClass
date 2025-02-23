@@ -1,9 +1,14 @@
 import { PauserOutput } from '../interfaces.js';
-import { TriggerableStream } from '../patcher/blip_stream.js';
+import { TriggerableStream } from '../blip.js';
 
+/** Factory and utility methods for Pauser UI element. */
 export class PauserElement {
+  /** Outer div to attach to page. */
   box: HTMLDivElement;
+
+  /** Stream of changes to paused state. */
   pausedStates = new TriggerableStream<boolean>();
+
   private btn: HTMLButtonElement;
   private elapsedStateBox: HTMLDivElement;
   private pausedStateBox: HTMLDivElement;
@@ -34,14 +39,15 @@ export class PauserElement {
     });
   }
 
-  setElapsedStateBoxText() {
+  private setElapsedStateBoxText() {
     this.elapsedStateBox.innerText = String(this.elapsed);
   }
 
-  setPausedStateBoxText() {
+  private setPausedStateBoxText() {
     this.pausedStateBox.innerText = this.paused ? 'Paused' : 'Running';
   }
 
+  /** Update UI state based on current pauser data. */
   handlePauserOutput(output: PauserOutput) {
     this.paused = output.paused;
     this.elapsed = output.elapsed;

@@ -1,10 +1,15 @@
-import { BlipReceiver } from '../../patcher/blip_stream.js';
+// I haven't finished adapting code from AI yet.
+/* eslint-disable */
+import { BlipReceiver } from '../../blip.js';
 import { CompletedMetricBeat } from '../../interfaces.js';
 import { makeDrumKit } from '../drums/kit.js';
 
 // Code in this file is adapted from a ChatGPT response.
 
-/** Create a whitenoise buffer. */
+/**
+ * Create a whitenoise buffer.
+ * @param ctx
+ */
 function createWhiteNoise(ctx: AudioContext): AudioBuffer {
 	const bufferSize = ctx.sampleRate * 2;
 	const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
@@ -15,7 +20,10 @@ function createWhiteNoise(ctx: AudioContext): AudioBuffer {
 	return buffer;
 }
 
-/** Create an 808 kick drum. */
+/**
+ * Create an 808 kick drum.
+ * @param ctx
+ */
 function makeKick(ctx: AudioContext) {
 	const osc = ctx.createOscillator();
 	const gain = ctx.createGain();
@@ -167,7 +175,10 @@ function beatToBeep(beat: CompletedMetricBeat): readonly Level[] {
 	return [Level.MID];
 }
 
-/** Blip receiver that emits beeps according to beat position. */
+/**
+ * Blip receiver that emits beeps according to beat position.
+ * @param ctx
+ */
 export function makeTempoBeeper(
 	ctx: AudioContext
 ): BlipReceiver<CompletedMetricBeat> {

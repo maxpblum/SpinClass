@@ -1,11 +1,11 @@
 import { toTimeString } from './clock.js';
 import { ClockElement } from './element.js';
-import { BlipSink } from '../patcher/blip_sink.js';
-import { TriggerableStream } from '../patcher/blip_stream.js';
-import { Transform } from '../patcher/blip_transformer.js';
+import { BlipSink, TriggerableStream, Transform } from '../blip.js';
 import { PauserOutput } from '../interfaces.js';
 
+/** UI component that displays readable clock time. */
 export class ClockComponent extends BlipSink<PauserOutput> {
+  /** Outer div of UI element to attach to DOM. */
   box: HTMLDivElement;
 
   constructor(doc: Document) {

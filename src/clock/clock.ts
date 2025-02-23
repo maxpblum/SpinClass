@@ -1,3 +1,4 @@
+/** Converts ms timestamp to a readable clock time. */
 export function toTimeString(ts: DOMHighResTimeStamp): string {
   // DOMHighResTimeStamp is milliseconds.
   const totalSec = Math.floor(ts / 1000);

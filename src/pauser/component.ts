@@ -7,14 +7,23 @@ import {
   PauserEvent,
 } from './pauser.js';
 import { PauserElement } from './element.js';
-import { BlipStream } from '../patcher/blip_stream.js';
-import { Transform } from '../patcher/blip_transformer.js';
-import { BlipSink } from '../patcher/blip_sink.js';
-import { AnimationFrameStream } from '../patcher/animation_frame_stream.js';
-import { Muxed } from '../patcher/mux.js';
+import {
+  BlipStream,
+  Transform,
+  BlipSink,
+  AnimationFrameStream,
+  Muxed,
+} from '../blip.js';
 
+/**
+ * Logic and UI for a millisecond-emitting stopwatch to drive time-based events
+ * downstream.
+ */
 export class PauserComponent {
+  /** Outer UI element to attach to DOM. */
   box: HTMLDivElement;
+
+  /** Stream of pause/resume/time events. */
   output: BlipStream<PauserOutput>;
 
   constructor(doc: Document) {
