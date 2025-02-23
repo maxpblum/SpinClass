@@ -48,7 +48,7 @@ export interface BeepLow {
 export const BEEP_LOW: BeepLow = { kind: 'low' };
 
 /** Event type for a beep sound. */
-export type BeepEvent = BeepHigh|BeepMid|BeepLow;
+export type BeepEvent = BeepHigh | BeepMid | BeepLow;
 
 /** A rhythmic "point in time" in terms of measures and beats. */
 export interface CompletedMetricBeat {

@@ -57,7 +57,7 @@ function beatToBeep(beat: CompletedMetricBeat): readonly Level[] {
 
 /** Blip receiver that emits beeps according to beat position. */
 export function makeTempoBeeper(
-  ctx: AudioContext
+  ctx: AudioContext,
 ): BlipReceiver<CompletedMetricBeat> {
   const beeper = new Beeper(ctx);
   return makeDrumKit(ctx, beatToBeep, {

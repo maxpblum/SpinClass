@@ -125,7 +125,7 @@ class StateMachine<State, InType, OutType> {
 
 /**
  * Make function that processes input data into output data with internal state
- * transitions. 
+ * transitions.
  */
 export function makeStateMachine<State, InType, OutType>(
   initial: State,

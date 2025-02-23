@@ -3,7 +3,7 @@ import { BlipReceiver, TriggerableStream, BlipSink } from '../../blip.js';
 
 /** Type for custom functions that take beats and decide which drums to play. */
 export type DrumDecider<DrumEnum extends number> = (
-  b: CompletedMetricBeat
+  b: CompletedMetricBeat,
 ) => readonly DrumEnum[];
 
 enum BasicDrums {
@@ -36,11 +36,11 @@ export type DrumMap<DrumEnum extends number> = {
 export function makeDrumKit<DrumEnum extends number>(
   ctx: AudioContext,
   drumDecider: DrumDecider<DrumEnum>,
-  drumMap: DrumMap<DrumEnum>
+  drumMap: DrumMap<DrumEnum>,
 ): BlipReceiver<CompletedMetricBeat> {
   return new BlipSink((b) => {
     for (const drum of drumDecider(b)) {
-      drumMap[drum]!.();
+      drumMap[drum]!();
     }
   });
 }
