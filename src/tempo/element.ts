@@ -34,7 +34,6 @@ export function getTempoControlElement(
   return box;
 }
 
-
 /**
  * Factory for a passthrough-only tempo UI element.
  * @param doc The HTML document.

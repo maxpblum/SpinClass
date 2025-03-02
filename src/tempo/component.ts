@@ -1,5 +1,10 @@
 import { NewTempo, makeTempoEvent } from '../interfaces.js';
-import { BlipStream, TriggerableStream, BlipReceiver, BlipSink } from '../blip.js';
+import {
+  BlipStream,
+  TriggerableStream,
+  BlipReceiver,
+  BlipSink,
+} from '../blip.js';
 import { getTempoControlElement, getAutomatedTempoElement } from './element.js';
 
 class BaseTempoComponent {
@@ -11,7 +16,6 @@ class BaseTempoComponent {
 
   /** Stream of NewTempo events. */
   readonly output: BlipStream<NewTempo> = this.triggerableStream;
-
 }
 
 /** Logic and UI for controlling tempo and emitting tempo change events. */
@@ -26,7 +30,9 @@ export class TempoComponent extends BaseTempoComponent {
 
 /** Logic and UI for showing tempo and passing through tempo change events. */
 export class AutomatedTempoComponent extends BaseTempoComponent {
-  private readonly inputEvents = new BlipSink<NewTempo>((t) => this.triggerableStream.trigger(t));
+  private readonly inputEvents = new BlipSink<NewTempo>((t) =>
+    this.triggerableStream.trigger(t),
+  );
   readonly receiver: BlipReceiver<NewTempo> = this.inputEvents;
 
   constructor(doc: Document) {
