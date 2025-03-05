@@ -63,3 +63,17 @@ export function mapClusterToRange(
   }
   return output;
 }
+
+const FIFTH = 2 ** (7/12);
+const MAJ_THIRD = 2 ** (4/12);
+const MIN_THIRD = 2 ** (3/12);
+
+/** Build a basic major triad. */
+export function major(pitch: number): Set<number> {
+  return new Set([pitch, pitch * FIFTH, pitch * MAJ_THIRD]);
+}
+
+/** Build a basic minor triad. */
+export function minor(pitch: number): Set<number> {
+  return new Set([pitch, pitch * FIFTH, pitch * MIN_THIRD]);
+}
