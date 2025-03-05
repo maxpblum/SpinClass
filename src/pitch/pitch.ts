@@ -12,7 +12,7 @@ const DEFAULT_ARPEGGIO_RANGE_MAX = A * 2;
 export function atAllOctavesInRange(
   pitch: number,
   min: number,
-  max: number
+  max: number,
 ): Set<number> {
   let candidate: number = pitch;
 
@@ -53,7 +53,7 @@ export function atAllOctavesInRange(
 export function mapClusterToRange(
   pitches: Iterable<number>,
   min: number,
-  max: number
+  max: number,
 ): Set<number> {
   const output: Set<number> = new Set();
   for (const p of pitches) {
@@ -64,9 +64,9 @@ export function mapClusterToRange(
   return output;
 }
 
-const FIFTH = 2 ** (7/12);
-const MAJ_THIRD = 2 ** (4/12);
-const MIN_THIRD = 2 ** (3/12);
+const FIFTH = 2 ** (7 / 12);
+const MAJ_THIRD = 2 ** (4 / 12);
+const MIN_THIRD = 2 ** (3 / 12);
 
 /** Build a basic major triad. */
 export function major(pitch: number): Set<number> {

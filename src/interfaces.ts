@@ -70,3 +70,6 @@ export interface PauserOutput {
   readonly paused: boolean;
   readonly elapsed: DOMHighResTimeStamp;
 }
+
+/** Event for a new pitch. */
+export type NewPitch = number;
