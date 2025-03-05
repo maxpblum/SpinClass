@@ -27,4 +27,24 @@ describe('makeTempoScheduler', () => {
       70,
     );
   });
+
+  it('calculates one point along linear-ramp tempo changes', () => {
+    const scheduler = makeTempoScheduler();
+    expect(scheduler({ paused: false, elapsed: 7500 })!.newTempoBpm).toEqual(
+      150,
+    );
+  });
+
+  it('calculates multiple points along linear-ramp tempo changes', () => {
+    const scheduler = makeTempoScheduler();
+    scheduler({ paused: false, elapsed: 7500 });
+    expect(scheduler({ paused: false, elapsed: 7600 })).toBeTruthy();
+  });
+
+  it('ends linear-ramp tempo changes correctly', () => {
+    const scheduler = makeTempoScheduler();
+    expect(scheduler({ paused: false, elapsed: 9100 })!.newTempoBpm).toEqual(
+      200,
+    );
+  });
 });
