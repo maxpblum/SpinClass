@@ -2,10 +2,11 @@
 import { PauserComponent } from './pauser/component.js';
 import { ClockComponent } from './clock/component.js';
 import { BeaterComponent } from './beater/component.js';
+import { makeTempoScheduler } from './tempo/scheduler.js';
 import { AutomatedTempoComponent, TempoComponent } from './tempo/component.js';
 import { makeTempoBeeper } from './instruments/beeper/beeper.js';
 import { make808 } from './instruments/drums/808.js';
-import { TriggerableStream } from './blip.js';
+import { TriggerableStream, Transform } from './blip.js';
 import { NewTempo, makeTempoEvent } from './interfaces.js';
 
 function doTestWithBeeper() {
@@ -72,3 +73,25 @@ const test808AutoTempoBtn = document.createElement('button');
 test808AutoTempoBtn.innerText = '3. 808 + automated tempo';
 test808AutoTempoBtn.addEventListener('click', doTestWith808AndAutomatedTempo);
 document.body.appendChild(test808AutoTempoBtn);
+
+function testTempoScheduler() {
+  const pauser = new PauserComponent(document);
+  const clock = new ClockComponent(document);
+  const tempoChanges = new Transform(makeTempoScheduler());
+  const tempo = new AutomatedTempoComponent(document);
+  const beater = new BeaterComponent(document);
+  pauser.output.pipe(clock);
+  pauser.output.pipe(tempoChanges);
+  pauser.output.pipe(beater.timeReceiver);
+  tempoChanges.pipe(tempo.receiver);
+  tempo.output.pipe(beater.tempoReceiver);
+  document.body.appendChild(tempo.box);
+  document.body.appendChild(pauser.box);
+  document.body.appendChild(beater.box);
+  document.body.appendChild(clock.box);
+}
+
+const testTempoSchedulerBtn = document.createElement('button');
+testTempoSchedulerBtn.innerText = '4. Tempo scheduler';
+testTempoSchedulerBtn.addEventListener('click', testTempoScheduler);
+document.body.appendChild(testTempoSchedulerBtn);

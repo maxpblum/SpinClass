@@ -1,6 +1,5 @@
 import {
   NonEmpty,
-  LinkedList,
   isEmptyList,
   getHead,
   getTail,
@@ -23,7 +22,7 @@ describe('getHead', () => {
 describe('getTail', () => {
   it('returns correct tail', () => {
     expect(getTail(makeList([1, 2, 3]) as NonEmpty<number>)).toEqual(
-      makeList([2, 3])
+      makeList([2, 3]),
     );
   });
 });

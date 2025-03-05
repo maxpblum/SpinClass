@@ -5,7 +5,7 @@ export interface NonEmpty<T> {
 }
 
 /** Linked list type. */
-export type LinkedList<T> = NonEmpty<T>|null;
+export type LinkedList<T> = NonEmpty<T> | null;
 
 /** Whether a linked list is empty. */
 export function isEmptyList(l: LinkedList<unknown>): l is null {
@@ -30,7 +30,7 @@ export function makeList<T>(array: T[]): LinkedList<T> {
     // array.length is > 0.
     const value = array.pop() as T;
     const tail = prevTail;
-    prevTail = {value, tail};
+    prevTail = { value, tail };
   }
   return prevTail;
 }

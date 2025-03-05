@@ -6,7 +6,7 @@ import {
   makeList,
   LinkedList,
 } from '../linked_list.js';
-import { NewTime, NewTempo, makeTempoEvent } from '../interfaces.js';
+import { PauserOutput, NewTempo, makeTempoEvent } from '../interfaces.js';
 
 interface Change {
   tempo: number;
@@ -32,12 +32,12 @@ const initialState: State = {
 
 function reducer(
   s: State,
-  input: NewTime
+  input: PauserOutput,
 ): { newState: State; output?: NewTempo } {
   let changes: LinkedList<Change> = s.changes;
   let output: NewTempo | null = null;
   while (!isEmptyList(changes)) {
-    if (getHead<Change>(changes).time <= input.newTimeMs) {
+    if (getHead<Change>(changes).time <= input.elapsed) {
       output = makeTempoEvent(getHead<Change>(changes).tempo);
       changes = getTail(changes);
     } else {
@@ -49,5 +49,5 @@ function reducer(
 
 /** Get a tempo-scheduling state machine. */
 export function makeTempoScheduler() {
-  return makeStateMachine<State, NewTime, NewTempo>(initialState, reducer);
+  return makeStateMachine<State, PauserOutput, NewTempo>(initialState, reducer);
 }
