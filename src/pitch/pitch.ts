@@ -9,7 +9,11 @@ const DEFAULT_ARPEGGIO_RANGE_MAX = A * 2;
  * Get a list of all octave-shifted pitches for a given pitch within a given
  * pitch range.
  */
-export function atAllOctavesInRange(pitch: number, min: number, max: number): Set<number> {
+export function atAllOctavesInRange(
+  pitch: number,
+  min: number,
+  max: number
+): Set<number> {
   let candidate: number = pitch;
 
   // If there is an octave of the given pitch in the given range, get to the
@@ -46,7 +50,11 @@ export function atAllOctavesInRange(pitch: number, min: number, max: number): Se
  * Get all octave-shifted pitches for some cluster of pitches mapped all over
  * a given range.
  */
-export function mapClusterToRange(pitches: Iterable<number>, min: number, max: number): Set<number> {
+export function mapClusterToRange(
+  pitches: Iterable<number>,
+  min: number,
+  max: number
+): Set<number> {
   const output: Set<number> = new Set();
   for (const p of pitches) {
     for (const shiftedPitch of atAllOctavesInRange(p, min, max)) {
