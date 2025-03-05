@@ -2,8 +2,8 @@ const [A, Bf, B, C, Df, D, Ef, E, F, Fs, G, Af] = [
   1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
 ].map((n) => 440 * 2 ** (n / 12));
 
-const DEFAULT_ARPEGGIO_RANGE_MIN = A / (2 * 2 * 2);
-const DEFAULT_ARPEGGIO_RANGE_MAX = A * 2;
+export const DEFAULT_ARPEGGIO_RANGE_MIN = A / (2 * 2 * 2);
+export const DEFAULT_ARPEGGIO_RANGE_MAX = A * 2;
 
 /**
  * Get a list of all octave-shifted pitches for a given pitch within a given
