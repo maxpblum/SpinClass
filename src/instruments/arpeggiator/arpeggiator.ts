@@ -5,6 +5,15 @@ import {
   PitchSet,
 } from '../../interfaces.js';
 import { Transform, makeStateMachine } from '../../blip.js';
+import {
+  TWELVE_TONES,
+  mapTriadToRange,
+  triadName,
+  DEFAULT_ARPEGGIO_RANGE_MIN,
+  DEFAULT_ARPEGGIO_RANGE_MAX,
+  major,
+  minor,
+} from '../../pitch/pitch.js';
 
 /** Get an array that is a shuffled copy of an iterable. */
 function shuffled<T>(ts: Iterable<T>): T[] {
@@ -53,6 +62,39 @@ export function makeArpeggiator(): Transform<
         };
       }
       return { newState: state };
-    })
+    }),
+  );
+}
+
+/** Get a stream of new pitch sets chosen randomly. */
+export function makePitchSetShuffler(): Transform<
+  CompletedMetricBeat,
+  NewPitchSet
+> {
+  return new Transform<CompletedMetricBeat, NewPitchSet>(
+    makeStateMachine<PitchSet, CompletedMetricBeat, NewPitchSet>(
+      [],
+      (prevSet, beat) => {
+        if (beat.quarter !== 1 || beat.eighth !== 1 || beat.sixteenth !== 1) {
+          return { newState: prevSet };
+        }
+        const triadBuilder = Math.random() >= 0.5 ? major : minor;
+        const rootPitch = TWELVE_TONES[Math.floor(Math.random() * 12)];
+        const triad = triadBuilder(rootPitch);
+        console.log(`Root: ${rootPitch.name}, triad: ${triadName(triad)}`);
+        const newSet = Array.from(
+          mapTriadToRange(
+            triad,
+            DEFAULT_ARPEGGIO_RANGE_MIN,
+            DEFAULT_ARPEGGIO_RANGE_MAX,
+          ),
+        );
+        console.log(`New set: ${newSet}`);
+        return {
+          newState: newSet,
+          output: { kind: 'newpitchset', pitches: newSet },
+        };
+      },
+    ),
   );
 }

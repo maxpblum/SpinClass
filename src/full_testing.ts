@@ -7,8 +7,11 @@ import { AutomatedTempoComponent, TempoComponent } from './tempo/component.js';
 import { makeTempoBeeper } from './instruments/beeper/beeper.js';
 import { make808 } from './instruments/drums/808.js';
 import { TriggerableStream, Transform } from './blip.js';
-import { NewTempo, makeTempoEvent, NewPitchSet } from './interfaces.js';
-import { makeArpeggiator } from './instruments/arpeggiator/arpeggiator.js';
+import { NewTempo, makeTempoEvent } from './interfaces.js';
+import {
+  makeArpeggiator,
+  makePitchSetShuffler,
+} from './instruments/arpeggiator/arpeggiator.js';
 import { makeSustainer } from './instruments/sustain/sustain.js';
 
 function doTestWithBeeper() {
@@ -103,23 +106,22 @@ function testArpeggiator() {
   const pauser = new PauserComponent(document);
   const clock = new ClockComponent(document);
   const beater = new BeaterComponent(document);
+  const pitchSetShuffler = makePitchSetShuffler();
   const arpeggiator = makeArpeggiator();
   const audioContext = new AudioContext();
   const sustainer = makeSustainer(audioContext);
   pauser.output.pipe(beater.timeReceiver);
   pauser.output.pipe(clock);
   tempo.output.pipe(beater.tempoReceiver);
+  beater.output.pipe(pitchSetShuffler);
   beater.output.pipe(arpeggiator);
+  beater.output.pipe(make808(audioContext));
+  pitchSetShuffler.pipe(arpeggiator);
   arpeggiator.pipe(sustainer);
   document.body.appendChild(tempo.box);
   document.body.appendChild(pauser.box);
   document.body.appendChild(beater.box);
   document.body.appendChild(clock.box);
-
-  // Create a one-time pitch set event for testing.
-  const pitchSets = new TriggerableStream<NewPitchSet>();
-  pitchSets.pipe(arpeggiator);
-  pitchSets.trigger({kind: 'newpitchset', pitches: [110, 220, 330, 440, 550, 660, 770, 880]});
 }
 
 const testArpeggiatorBtn = document.createElement('button');
