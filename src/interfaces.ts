@@ -73,3 +73,12 @@ export interface PauserOutput {
 
 /** Event for a new pitch. */
 export type NewPitch = number;
+
+/** Type for a set of pitches. */
+export type PitchSet = number[];
+
+/** Event for a new set of pitches. */
+export interface NewPitchSet {
+  kind: 'newpitchset';
+  pitches: PitchSet;
+}

@@ -7,7 +7,9 @@ import { AutomatedTempoComponent, TempoComponent } from './tempo/component.js';
 import { makeTempoBeeper } from './instruments/beeper/beeper.js';
 import { make808 } from './instruments/drums/808.js';
 import { TriggerableStream, Transform } from './blip.js';
-import { NewTempo, makeTempoEvent } from './interfaces.js';
+import { NewTempo, makeTempoEvent, NewPitchSet } from './interfaces.js';
+import { makeArpeggiator } from './instruments/arpeggiator/arpeggiator.js';
+import { makeSustainer } from './instruments/sustain/sustain.js';
 
 function doTestWithBeeper() {
   const tempo = new TempoComponent(document);
@@ -95,3 +97,32 @@ const testTempoSchedulerBtn = document.createElement('button');
 testTempoSchedulerBtn.innerText = '4. Tempo scheduler';
 testTempoSchedulerBtn.addEventListener('click', testTempoScheduler);
 document.body.appendChild(testTempoSchedulerBtn);
+
+function testArpeggiator() {
+  const tempo = new TempoComponent(document);
+  const pauser = new PauserComponent(document);
+  const clock = new ClockComponent(document);
+  const beater = new BeaterComponent(document);
+  const arpeggiator = makeArpeggiator();
+  const audioContext = new AudioContext();
+  const sustainer = makeSustainer(audioContext);
+  pauser.output.pipe(beater.timeReceiver);
+  pauser.output.pipe(clock);
+  tempo.output.pipe(beater.tempoReceiver);
+  beater.output.pipe(arpeggiator);
+  arpeggiator.pipe(sustainer);
+  document.body.appendChild(tempo.box);
+  document.body.appendChild(pauser.box);
+  document.body.appendChild(beater.box);
+  document.body.appendChild(clock.box);
+
+  // Create a one-time pitch set event for testing.
+  const pitchSets = new TriggerableStream<NewPitchSet>();
+  pitchSets.pipe(arpeggiator);
+  pitchSets.trigger({kind: 'newpitchset', pitches: [110, 220, 330, 440, 550, 660, 770, 880]});
+}
+
+const testArpeggiatorBtn = document.createElement('button');
+testArpeggiatorBtn.innerText = '5. Arpeggiator';
+testArpeggiatorBtn.addEventListener('click', testArpeggiator);
+document.body.appendChild(testArpeggiatorBtn);
