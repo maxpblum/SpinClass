@@ -21,7 +21,11 @@ const Af: PitchClass = { name: 'Af', canonicalFreq: 440 * 2 ** (11 / 12) };
 export const TWELVE_TONES = [A, Bf, B, C, Df, D, Ef, E, F, Fs, G, Af];
 
 function upSemis(root: PitchClass, semis: number): PitchClass {
-  return TWELVE_TONES[(TWELVE_TONES.indexOf(root) + semis) % 12];
+  let newIdx = TWELVE_TONES.indexOf(root) + semis;
+  while (newIdx < 0) {
+    newIdx += 12;
+  }
+  return TWELVE_TONES[newIdx % 12];
 }
 
 /** Type for a major or minor triad. */
@@ -30,6 +34,11 @@ export interface Triad {
   third: PitchClass;
   fifth: PitchClass;
   variant: 'major' | 'minor';
+}
+
+/** Whether two triads are the same. */
+export function sameTriad(a: Triad, b: Triad): boolean {
+  return a.root === b.root && a.variant == b.variant;
 }
 
 /** Get canonical triad name. */
@@ -55,6 +64,47 @@ export function minor(pitch: PitchClass): Triad {
     fifth: upSemis(pitch, 7),
     variant: 'minor',
   };
+}
+
+/** Riemannian "L" transform. */
+export function l(t: Triad): Triad {
+  return t.variant === 'major'
+    ? {
+        root: t.third,
+        third: t.fifth,
+        fifth: upSemis(t.root, -1),
+        variant: 'minor',
+      }
+    : {
+        root: upSemis(t.fifth, 1),
+        third: t.root,
+        fifth: t.third,
+        variant: 'major',
+      };
+}
+
+/** Riemannian "P" transform. */
+export function p(t: Triad): Triad {
+  return t.variant === 'major'
+    ? { ...t, third: upSemis(t.third, -1), variant: 'minor' }
+    : { ...t, third: upSemis(t.third, 1), variant: 'major' };
+}
+
+/** Riemannian "R" transform. */
+export function r(t: Triad): Triad {
+  return t.variant === 'major'
+    ? {
+        root: upSemis(t.fifth, 2),
+        third: t.root,
+        fifth: t.third,
+        variant: 'minor',
+      }
+    : {
+        root: t.third,
+        third: t.fifth,
+        fifth: upSemis(t.root, -2),
+        variant: 'major',
+      };
 }
 
 /** Reasonable min arpeggiation pitch. */

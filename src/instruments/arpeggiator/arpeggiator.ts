@@ -11,8 +11,12 @@ import {
   triadName,
   DEFAULT_ARPEGGIO_RANGE_MIN,
   DEFAULT_ARPEGGIO_RANGE_MAX,
+  Triad,
+  sameTriad,
   major,
-  minor,
+  r,
+  l,
+  p,
 } from '../../pitch/pitch.js';
 
 /** Get an array that is a shuffled copy of an iterable. */
@@ -72,16 +76,31 @@ export function makePitchSetShuffler(): Transform<
   NewPitchSet
 > {
   return new Transform<CompletedMetricBeat, NewPitchSet>(
-    makeStateMachine<PitchSet, CompletedMetricBeat, NewPitchSet>(
-      [],
-      (prevSet, beat) => {
+    makeStateMachine<Triad, CompletedMetricBeat, NewPitchSet>(
+      major(TWELVE_TONES[0]),
+      (prevTriad, beat) => {
         if (beat.quarter !== 1 || beat.eighth !== 1 || beat.sixteenth !== 1) {
-          return { newState: prevSet };
+          return { newState: prevTriad };
         }
-        const triadBuilder = Math.random() >= 0.5 ? major : minor;
-        const rootPitch = TWELVE_TONES[Math.floor(Math.random() * 12)];
-        const triad = triadBuilder(rootPitch);
-        console.log(`Root: ${rootPitch.name}, triad: ${triadName(triad)}`);
+        let triad = prevTriad;
+        while (true) {
+          console.log('Choosing whether to apply a transform, 80% likelihood.');
+          if (!sameTriad(triad, prevTriad) && Math.random() >= 0.8) {
+            console.log('No more transforms.');
+            break;
+          }
+          console.log('Applying another transform from R, L, P.');
+          const transformIdx = Math.floor(Math.random() * 3);
+          const { transformName, transformer } = [
+            { transformName: 'R', transformer: r },
+            { transformName: 'L', transformer: l },
+            { transformName: 'P', transformer: p },
+          ][transformIdx];
+          console.log(`Chose ${transformName}`);
+          triad = transformer(triad);
+          console.log(`Current triad candidate: ${triadName(triad)}`);
+        }
+        console.log(`Chosen triad: ${triadName(triad)}`);
         const newSet = Array.from(
           mapTriadToRange(
             triad,
@@ -89,9 +108,8 @@ export function makePitchSetShuffler(): Transform<
             DEFAULT_ARPEGGIO_RANGE_MAX,
           ),
         );
-        console.log(`New set: ${newSet}`);
         return {
-          newState: newSet,
+          newState: triad,
           output: { kind: 'newpitchset', pitches: newSet },
         };
       },
