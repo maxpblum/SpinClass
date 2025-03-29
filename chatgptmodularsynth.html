@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modular Synth</title>
+    <style>
+        .node {
+            border: 1px solid black;
+            padding: 10px;
+            margin: 10px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <button onclick="synth.addNode('oscillator')">Add Oscillator</button>
+    <button onclick="synth.addNode('filter')">Add Filter</button>
+    <button onclick="synth.addNode('gain')">Add Gain</button>
+    <div id="node-container"></div>
+
+    <script>
+        class ModularSynth {
+            constructor(audioContext) {
+                this.audioContext = audioContext;
+                this.nodes = [];
+                this.nodeContainer = document.getElementById('node-container');
+            }
+
+            addNode(type) {
+                let node;
+                let id = `node-${this.nodes.length}`;
+                let nodeName = `${type}-${this.nodes.length}`;
+                let nodeElement = document.createElement('div');
+                nodeElement.classList.add('node');
+                nodeElement.innerHTML = `<strong>${nodeName}</strong><br>`;
+
+                switch (type) {
+                    case 'oscillator':
+                        node = this.audioContext.createOscillator();
+                        node.frequency.value = 440; 
+                        node.start();
+                        nodeElement.innerHTML += `Frequency: <input type='number' value='440' min='20' max='2000' step='1' 
+                            oninput='synth.updateFrequency("${id}", this.value)'><br>`;
+                        nodeElement.innerHTML += `Waveform: <select onchange='synth.updateWaveform("${id}", this.value)'>
+                            <option value='sine'>Sine</option>
+                            <option value='square'>Square</option>
+                            <option value='sawtooth'>Sawtooth</option>
+                        </select><br>`;
+                        break;
+                    case 'gain':
+                        node = this.audioContext.createGain();
+                        node.gain.value = 1;
+                        nodeElement.innerHTML += `Gain: <input type='range' min='0' max='1' step='0.01' value='1' 
+                            oninput='synth.updateGain("${id}", this.value)'><br>`;
+                        break;
+                    case 'filter':
+                        node = this.audioContext.createBiquadFilter();
+                        node.type = 'lowpass';
+                        node.frequency.value = 1000;
+                        nodeElement.innerHTML += `Cutoff: <input type='number' value='1000' min='20' max='5000' step='10' 
+                            oninput='synth.updateFilter("${id}", this.value)'><br>`;
+                        break;
+                    default:
+                        return;
+                }
+                
+                let selectElement = document.createElement('select');
+                this.updateOutputDropdowns(selectElement, id);
+                
+                nodeElement.appendChild(selectElement);
+                let connectButton = document.createElement('button');
+                connectButton.innerText = 'Connect';
+                connectButton.onclick = () => this.connectNode(id, selectElement.value);
+                nodeElement.appendChild(connectButton);
+                nodeElement.setAttribute('data-id', id);
+                this.nodeContainer.appendChild(nodeElement);
+
+                this.nodes.push({ id, node, element: nodeElement, name: nodeName });
+                this.refreshAllDropdowns();
+            }
+
+            updateFrequency(id, value) {
+                let node = this.nodes.find(n => n.id === id)?.node;
+                if (node) node.frequency.value = value;
+            }
+
+            updateWaveform(id, value) {
+                let node = this.nodes.find(n => n.id === id)?.node;
+                if (node) node.type = value;
+            }
+
+            updateGain(id, value) {
+                let node = this.nodes.find(n => n.id === id)?.node;
+                if (node) node.gain.value = value;
+            }
+
+            updateFilter(id, value) {
+                let node = this.nodes.find(n => n.id === id)?.node;
+                if (node) node.frequency.value = value;
+            }
+
+            connectNode(sourceId, targetId) {
+                let sourceNode = this.nodes.find(n => n.id === sourceId)?.node;
+                let targetNode = targetId === 'destination' ? this.audioContext.destination : this.nodes.find(n => n.id === targetId)?.node;
+                if (sourceNode && targetNode) {
+                    sourceNode.connect(targetNode);
+                }
+            }
+
+            updateOutputDropdowns(selectElement, excludeId) {
+                selectElement.innerHTML = `<option value='destination'>Output</option>`;
+                this.nodes.forEach(n => {
+                    if (n.id !== excludeId) {
+                        selectElement.innerHTML += `<option value='${n.id}'>${n.name}</option>`;
+                    }
+                });
+            }
+
+            refreshAllDropdowns() {
+                this.nodes.forEach(n => {
+                    let selectElement = n.element.querySelector('select');
+                    this.updateOutputDropdowns(selectElement, n.id);
+                });
+            }
+        }
+
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const synth = new ModularSynth(audioContext);
+    </script>
+</body>
+</html>
+
